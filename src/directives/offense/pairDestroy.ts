@@ -5,6 +5,7 @@ import {PairDestroyerOverlord} from '../../overlords/offense/pairDestroyer';
 import {profile} from '../../profiler/decorator';
 import {Visualizer} from '../../visuals/Visualizer';
 import {Directive} from '../Directive';
+import {MY_USERNAME} from '../../~settings';
 
 
 interface DirectivePairDestroyMemory extends FlagMemory {
@@ -39,8 +40,10 @@ export class DirectivePairDestroy extends Directive {
 	}
 
 	run(): void {
-		// If there are no hostiles left in the room then remove the flag and associated healpoint
-		if (this.room && this.room.hostiles.length == 0 && this.room.hostileStructures.length == 0) {
+		// If there are no hostiles left in the room, and it's ours, then remove the flag
+		if (this.room && this.room.hostiles.length == 0
+				&& this.room.hostileStructures.length == 0
+				&& (this.room.owner == MY_USERNAME || this.room.reservedByMe)) {
 			log.notify(`Pair destroyer mission at ${this.pos.roomName} completed successfully.`);
 			this.remove();
 		}
